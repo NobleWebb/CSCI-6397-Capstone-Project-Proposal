@@ -1,0 +1,22 @@
+{
+  "name": "compliance-tracker-frontend",
+  "version": "1.0.0",
+  "description": "React frontend for Compliance Tracker",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.2.0",
+    "axios": "^1.5.0",
+    "react-router-dom": "^6.16.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --coverage",
+    "lint": "eslint src/"
+  },
+  "devDependencies": {
+    "react-scripts": "5.0.1",
+    "eslint": "^8.51.0"
+  }
+}
