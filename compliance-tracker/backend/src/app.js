@@ -8,6 +8,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 
 const app = express();
 
@@ -29,6 +30,9 @@ if (process.env.NODE_ENV !== 'test') {
 
 // --- Body parsing ----------------------------------------------------------
 app.use(express.json({ limit: '10kb' }));
+
+// --- Static files (frontend) ----------------------------------------------
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // --- Request logging (quiet during tests) ----------------------------------
 if (process.env.NODE_ENV !== 'test') {
