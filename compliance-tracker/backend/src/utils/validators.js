@@ -16,6 +16,6 @@ module.exports = {
   ],
   validateControlUpdate: [
     body('answer').isIn(['Yes', 'No', 'In-Progress', 'Not-Applicable']),
-    body('rating').isInt({ min: 1, max: 5 })
+    body('rating').optional({ nullable: true }).isInt({ min: 1, max: 5 })
   ]
 };
