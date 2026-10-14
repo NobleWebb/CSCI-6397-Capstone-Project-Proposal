@@ -34,7 +34,7 @@ router.get('/', authMiddleware, async (req, res, next) => {
   try {
     const result = await db.query(
       `SELECT cs.status_id, cs.control_id, c.control_name, c.control_family,
-              c.nist_standard, cs.answer, cs.rating, cs.evidence, cs.updated_at
+              c.nist_standard, c.phase, cs.answer, cs.rating, cs.evidence, cs.updated_at
        FROM compliance_status cs
        JOIN controls c ON cs.control_id = c.control_id
        WHERE cs.user_id = $1

@@ -173,6 +173,8 @@ document.getElementById('controlsBody').addEventListener('click', function(e) {
   editingControlId = controlId;
   document.getElementById('modalTitle').textContent = controlId;
   document.getElementById('modalSubtitle').textContent = record.control_name;
+  document.getElementById('descriptionText').textContent = record.nist_standard || record.control_name;
+  document.getElementById('phaseBadge').textContent = record.phase || '';
   document.getElementById('editAnswer').value = record.answer || 'Yes';
   document.getElementById('editRating').value = record.rating || '';
   document.getElementById('editEvidence').value = record.evidence || '';
