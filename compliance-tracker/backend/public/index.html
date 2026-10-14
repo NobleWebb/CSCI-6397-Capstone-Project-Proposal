@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compliance Tracker — Arkansas Cybersecurity Rubric</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="loginScreen" class="login-container">
+  <div class="login-box">
+    <h2>Compliance Tracker</h2>
+    <p class="login-subtitle">Arkansas Cybersecurity Rubric — NIST 800-53B</p>
+    <div id="loginError" class="error-msg"></div>
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" value="noble@archfordcoop.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" value="password" required>
+      </div>
+      <button type="submit" class="btn-primary" id="loginBtn">Sign In</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="appScreen" style="display:none;">
+  <div class="header">
+    <div>
+      <h1>Compliance Tracker</h1>
+      <div class="subtitle">Arkansas Cybersecurity Rubric — NIST 800-53B Moderate Baseline</div>
+    </div>
+    <div class="user-info">
+      <span id="userEmail"></span>
+      <button class="logout-btn" id="logoutBtn">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Score Cards -->
+    <div class="score-section">
+      <div class="score-card">
+        <div class="label">Compliance Score</div>
+        <div class="value" id="compliancePercent">—</div>
+        <div class="detail" id="complianceDetail"></div>
+      </div>
+      <div class="score-card">
+        <div class="label">Maturity Rating</div>
+        <div class="value" id="maturityValue">—</div>
+        <div class="detail">Scale: 1 (Initial) — 5 (Optimized)</div>
+      </div>
+      <div class="score-card">
+        <div class="label">Controls Assessed</div>
+        <div class="value" id="controlsAssessed">—</div>
+        <div class="detail" id="controlsDetail"></div>
+      </div>
+    </div>
+
+    <!-- Family Breakdown -->
+    <div class="family-section">
+      <h3>Compliance by Control Family</h3>
+      <div class="family-grid" id="familyGrid"></div>
+    </div>
+
+    <!-- Controls List -->
+    <div class="controls-section">
+      <h3>All Controls</h3>
+      <table class="controls-table">
+        <thead>
+          <tr>
+            <th>Control ID</th>
+            <th>Name</th>
+            <th>Family</th>
+            <th>Status</th>
+            <th>Maturity</th>
+          </tr>
+        </thead>
+        <tbody id="controlsBody">
+          <tr><td colspan="5" class="loading">Loading controls...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EDIT MODAL ===== -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <h3 id="modalTitle"></h3>
+    <p class="modal-subtitle" id="modalSubtitle"></p>
+    <form id="editForm">
+      <div class="form-group">
+        <label>Compliance Answer</label>
+        <select id="editAnswer">
+          <option value="Yes">Yes — Fully Compliant</option>
+          <option value="No">No — Not Compliant</option>
+          <option value="In-Progress">In-Progress — Partially Implemented</option>
+          <option value="Not-Applicable">Not-Applicable</option>
+        </select>
+      </div>
+      <div class="form-group" id="ratingGroup">
+        <label>Maturity Rating (1-5)</label>
+        <select id="editRating">
+          <option value="">No rating</option>
+          <option value="1">1 — Initial</option>
+          <option value="2">2 — Developing</option>
+          <option value="3">3 — Defined</option>
+          <option value="4">4 — Managed</option>
+          <option value="5">5 — Optimized</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Evidence / Notes</label>
+        <textarea id="editEvidence" rows="3" placeholder="Describe your evidence..."></textarea>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
+        <button type="submit" class="btn-save">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
