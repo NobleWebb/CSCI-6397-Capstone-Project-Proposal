@@ -3,6 +3,7 @@ let token = null;
 let currentUser = null;
 let editingControlId = null;
 let controlsCache = [];  // store compliance data for click lookups
+let expandedFamily = null; // which family is currently expanded
 
 const API = '';  // same origin
 
@@ -49,6 +50,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 document.getElementById('logoutBtn').addEventListener('click', function() {
   token = null;
   currentUser = null;
+  expandedFamily = null;
   document.getElementById('appScreen').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
 });
@@ -70,9 +72,15 @@ async function loadDashboard() {
     var scoreData = await scoreRes.json();
     var complianceData = await complianceRes.json();
 
+    controlsCache = complianceData || [];
+
     renderScore(scoreData);
     renderFamilies(scoreData.byFamily || {});
-    renderControls(complianceData);
+
+    // If a family was expanded, refresh its controls panel
+    if (expandedFamily) {
+      showFamilyControls(expandedFamily);
+    }
   } catch (err) {
     console.error('Failed to load dashboard:', err);
   }
@@ -126,43 +134,114 @@ function renderFamilies(byFamily) {
   grid.innerHTML = families.map(function(fam) {
     var s = byFamily[fam];
     var pct = s.compliancePercent || 0;
-    var color = pct >= 75 ? '#059669' : pct >= 50 ? '#d97706' : '#dc2626';
+    var barColor = pct >= 75 ? '#34d399' : pct >= 50 ? '#ffb72f' : '#f87171';
     var name = familyNames[fam] || fam;
-    return '<div class="family-card">' +
+    var isRainbow = pct >= 85;
+    var barClass = 'family-bar-fill' + (isRainbow ? ' rainbow-bar' : '');
+    var barWrapClass = 'family-bar' + (isRainbow ? ' rainbow-glow' : '');
+    var barStyle = 'width:' + pct + '%;';
+    if (isRainbow) {
+      barStyle += 'background:linear-gradient(90deg,#ff0000,#ff8800,#ffff00,#00ff00,#00ccff,#8800ff,#ff0000);background-size:200% 100%;';
+    } else {
+      barStyle += 'background:' + barColor + ';';
+    }
+    var activeClass = (expandedFamily === fam) ? ' active' : '';
+    return '<div class="family-card' + activeClass + '" data-family="' + fam + '">' +
       '<div class="family-name">' + fam + ' — ' + name + '</div>' +
-      '<div class="family-percent" style="color:' + color + '">' + pct + '%</div>' +
-      '<div class="family-bar">' +
-        '<div class="family-bar-fill" style="width:' + pct + '%;background:' + color + '"></div>' +
+      '<div class="family-percent">' + pct + '%</div>' +
+      '<div class="' + barWrapClass + '">' +
+        '<div class="' + barClass + '" style="' + barStyle + '"></div>' +
       '</div>' +
+      '<div class="family-tap-hint">Click to view controls</div>' +
     '</div>';
   }).join('');
 }
 
-// ---- Render Controls Table ----
-function renderControls(records) {
-  var tbody = document.getElementById('controlsBody');
-  controlsCache = records || [];
+// ---- Family Card Click Handler ----
+document.getElementById('familyGrid').addEventListener('click', function(e) {
+  var card = e.target.closest('.family-card[data-family]');
+  if (!card) return;
 
-  if (!records || records.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" class="loading">No compliance records found.</td></tr>';
-    return;
+  var family = card.getAttribute('data-family');
+
+  if (expandedFamily === family) {
+    // Clicking the same family — collapse
+    closeFamilyControls();
+  } else {
+    // Expand this family
+    showFamilyControls(family);
+  }
+});
+
+// ---- Show Controls for a Family ----
+function showFamilyControls(familyCode) {
+  expandedFamily = familyCode;
+
+  var familyNames = {
+    AC: 'Access Control', AT: 'Awareness & Training',
+    AU: 'Audit & Accountability', CA: 'Assessment & Authorization',
+    CM: 'Configuration Mgmt', CP: 'Contingency Planning',
+    IA: 'Identification & Auth', IR: 'Incident Response',
+    MA: 'Maintenance', MP: 'Media Protection',
+    PE: 'Physical & Environmental', PL: 'Planning',
+    PM: 'Program Management', PS: 'Personnel Security',
+    PT: 'PII Processing', RA: 'Risk Assessment',
+    SA: 'System Acquisition', SC: 'System & Comms Protection',
+    SI: 'System & Info Integrity', SR: 'Supply Chain Risk'
+  };
+
+  var name = familyNames[familyCode] || familyCode;
+
+  // Update title
+  document.getElementById('familyControlsTitle').textContent = familyCode + ' — ' + name;
+
+  // Filter controls for this family
+  var familyControls = controlsCache.filter(function(r) {
+    return r.control_family === familyCode;
+  });
+
+  // Render the controls table
+  var tbody = document.getElementById('familyControlsBody');
+  if (familyControls.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" class="loading">No controls found for this family.</td></tr>';
+  } else {
+    tbody.innerHTML = familyControls.map(function(r) {
+      var badgeClass = r.answer ? 'badge-' + r.answer.toLowerCase().replace(/\s+/g, '-') : 'badge-unanswered';
+      var stars = r.rating ? '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating) : '—';
+      return '<tr data-control-id="' + r.control_id + '">' +
+        '<td><strong>' + r.control_id + '</strong></td>' +
+        '<td>' + r.control_name + '</td>' +
+        '<td><span class="badge ' + badgeClass + '">' + (r.answer || 'Not assessed') + '</span></td>' +
+        '<td><span class="rating">' + stars + '</span></td>' +
+      '</tr>';
+    }).join('');
   }
 
-  tbody.innerHTML = records.map(function(r) {
-    var badgeClass = r.answer ? 'badge-' + r.answer.toLowerCase().replace(/\s+/g, '-') : 'badge-unanswered';
-    var stars = r.rating ? '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating) : '—';
-    return '<tr data-control-id="' + r.control_id + '">' +
-      '<td><strong>' + r.control_id + '</strong></td>' +
-      '<td>' + r.control_name + '</td>' +
-      '<td>' + r.control_family + '</td>' +
-      '<td><span class="badge ' + badgeClass + '">' + (r.answer || 'Not assessed') + '</span></td>' +
-      '<td><span class="rating">' + stars + '</span></td>' +
-    '</tr>';
-  }).join('');
+  // Show the panel
+  document.getElementById('familyControls').style.display = 'block';
+
+  // Highlight the active card
+  var allCards = document.querySelectorAll('.family-card');
+  allCards.forEach(function(c) { c.classList.remove('active'); });
+  var activeCard = document.querySelector('.family-card[data-family="' + familyCode + '"]');
+  if (activeCard) activeCard.classList.add('active');
+
+  // Scroll the controls panel into view
+  document.getElementById('familyControls').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// ---- Table row click handler (event delegation) ----
-document.getElementById('controlsBody').addEventListener('click', function(e) {
+// ---- Close Family Controls Panel ----
+function closeFamilyControls() {
+  expandedFamily = null;
+  document.getElementById('familyControls').style.display = 'none';
+  var allCards = document.querySelectorAll('.family-card');
+  allCards.forEach(function(c) { c.classList.remove('active'); });
+}
+
+document.getElementById('closeFamilyControls').addEventListener('click', closeFamilyControls);
+
+// ---- Control row click inside family panel → open edit modal ----
+document.getElementById('familyControlsBody').addEventListener('click', function(e) {
   var row = e.target.closest('tr[data-control-id]');
   if (!row) return;
 
@@ -181,9 +260,19 @@ document.getElementById('controlsBody').addEventListener('click', function(e) {
   document.getElementById('editModal').classList.add('active');
 });
 
+// ---- Toggle NIST description expand/collapse ----
+document.getElementById('controlDescription').addEventListener('click', function() {
+  var desc = document.getElementById('controlDescription');
+  var toggle = document.getElementById('descToggle');
+  desc.classList.toggle('expanded');
+  toggle.textContent = desc.classList.contains('expanded') ? 'TAP TO COLLAPSE' : 'TAP TO EXPAND';
+});
+
 // ---- Close Modal ----
 function closeModal() {
   document.getElementById('editModal').classList.remove('active');
+  document.getElementById('controlDescription').classList.remove('expanded');
+  document.getElementById('descToggle').textContent = 'TAP TO EXPAND';
   editingControlId = null;
 }
 

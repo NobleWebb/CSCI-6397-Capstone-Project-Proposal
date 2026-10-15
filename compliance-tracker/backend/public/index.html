@@ -65,25 +65,24 @@
     <div class="family-section">
       <h3>Compliance by Control Family</h3>
       <div class="family-grid" id="familyGrid"></div>
-    </div>
-
-    <!-- Controls List -->
-    <div class="controls-section">
-      <h3>All Controls</h3>
-      <table class="controls-table">
-        <thead>
-          <tr>
-            <th>Control ID</th>
-            <th>Name</th>
-            <th>Family</th>
-            <th>Status</th>
-            <th>Maturity</th>
-          </tr>
-        </thead>
-        <tbody id="controlsBody">
-          <tr><td colspan="5" class="loading">Loading controls...</td></tr>
-        </tbody>
-      </table>
+      <!-- Expandable controls panel (shown when a family card is clicked) -->
+      <div id="familyControls" class="family-controls" style="display:none;">
+        <div class="family-controls-header">
+          <h4 id="familyControlsTitle"></h4>
+          <button class="family-controls-close" id="closeFamilyControls">&times;</button>
+        </div>
+        <table class="controls-table">
+          <thead>
+            <tr>
+              <th>Control ID</th>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Maturity</th>
+            </tr>
+          </thead>
+          <tbody id="familyControlsBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -93,6 +92,11 @@
   <div class="modal">
     <h3 id="modalTitle"></h3>
     <p class="modal-subtitle" id="modalSubtitle"></p>
+    <div class="control-description" id="controlDescription">
+      <div class="description-label">NIST Requirement <span class="description-toggle" id="descToggle">TAP TO EXPAND</span></div>
+      <p id="descriptionText"></p>
+      <span class="phase-badge" id="phaseBadge"></span>
+    </div>
     <form id="editForm">
       <div class="form-group">
         <label>Compliance Answer</label>
