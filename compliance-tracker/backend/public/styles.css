@@ -646,9 +646,709 @@ body::after {
 }
 ::-webkit-scrollbar-thumb:hover { background: rgba(60, 200, 60, 0.35); }
 
+/* --- Navigation Tabs --- */
+.nav-tabs {
+  display: flex;
+  gap: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.25));
+  border-bottom: 2px solid rgba(60, 200, 60, 0.2);
+  position: relative;
+  z-index: 1;
+  padding: 0 24px;
+}
+.nav-tab {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 14px 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.nav-tab:hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(60, 200, 60, 0.08);
+}
+.nav-tab.active {
+  color: #fff;
+  background: rgba(60, 200, 60, 0.12);
+}
+.nav-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 12px;
+  right: 12px;
+  height: 3px;
+  background: linear-gradient(90deg, #ff8c00, #ffb72f);
+  clip-path: polygon(2px 0, calc(100% - 2px) 0, 100% 100%, 0 100%);
+}
+
+/* --- Recommendations Tab --- */
+.rec-header-section {
+  background: linear-gradient(135deg, rgba(26, 122, 26, 0.85) 0%, rgba(44, 168, 44, 0.85) 40%, rgba(68, 204, 68, 0.85) 100%);
+  border-radius: 0;
+  clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
+  padding: 24px;
+  margin-bottom: 20px;
+  filter:
+    drop-shadow(0 0 0 white) drop-shadow(0 0 0 white)
+    drop-shadow(0 0 1px white) drop-shadow(0 0 1px white)
+    drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+}
+.rec-header-section h3 {
+  font-size: 16px;
+  color: #fff;
+  font-weight: 900;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000, 2px 0 0 #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: -24px -24px 16px -24px;
+  padding: 12px 24px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.15));
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+}
+.rec-subtitle {
+  font-size: 13px;
+  color: #fff;
+  opacity: 0.8;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  font-weight: 600;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.rec-stats {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+.rec-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.rec-stat-value {
+  font-size: 28px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000, 2px 0 0 #000;
+}
+.rec-stat-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  opacity: 0.75;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.rec-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.rec-filter-row label {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #fff;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.rec-filter-row select {
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0;
+  clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.rec-filter-row select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* --- Recommendation Cards --- */
+.rec-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.rec-card {
+  background: linear-gradient(135deg, rgba(26, 122, 26, 0.75) 0%, rgba(44, 168, 44, 0.75) 40%, rgba(68, 204, 68, 0.75) 100%);
+  border-radius: 0;
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
+  padding: 18px 22px;
+  cursor: pointer;
+  transition: all 0.2s;
+  filter:
+    drop-shadow(0 0 0 white) drop-shadow(0 0 0 white)
+    drop-shadow(0 0 1px white) drop-shadow(0 0 1px white)
+    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+}
+.rec-card:hover {
+  transform: translateY(-2px);
+  filter:
+    drop-shadow(0 0 0 white) drop-shadow(0 0 0 white)
+    drop-shadow(0 0 1px white) drop-shadow(0 0 1px white)
+    drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+}
+.rec-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.rec-card-id {
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000, 2px 0 0 #000;
+}
+.rec-card-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.rec-card .phase-badge {
+  margin-bottom: 8px;
+}
+.rec-card-links {
+  font-size: 12px;
+  color: #fff;
+  opacity: 0.85;
+  font-weight: 600;
+  margin-top: 6px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.rec-link-count {
+  font-size: 16px;
+  font-weight: 900;
+  color: #ffb72f;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.rec-link-ids {
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+.rec-card-rating {
+  margin-top: 6px;
+}
+
+/* =============================================
+   TRAIL BAR — Breadcrumb Navigation
+   ============================================= */
+.trail-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(60, 200, 60, 0.15);
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+  max-width: 1100px;
+  margin: 0 auto 16px auto;
+  position: relative;
+  z-index: 1;
+}
+.trail-bar-label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: rgba(255, 255, 255, 0.45);
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  white-space: nowrap;
+}
+.trail-crumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.trail-crumb {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 183, 47, 0.9);
+  cursor: pointer;
+  padding: 4px 12px;
+  background: rgba(255, 140, 0, 0.15);
+  clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);
+  transition: all 0.2s;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  white-space: nowrap;
+}
+.trail-crumb:hover {
+  background: rgba(255, 140, 0, 0.3);
+  color: #ffcc44;
+}
+.trail-crumb-active {
+  background: rgba(255, 140, 0, 0.3);
+  color: #fff;
+  cursor: default;
+}
+.trail-sep {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 13px;
+  font-weight: 700;
+}
+.trail-close {
+  background: rgba(255, 100, 100, 0.12);
+  border: 1px solid rgba(255, 100, 100, 0.25);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 14px;
+  clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.trail-close:hover {
+  background: rgba(255, 100, 100, 0.25);
+  border-color: rgba(255, 100, 100, 0.5);
+  color: #fff;
+}
+
+/* =============================================
+   TRAIL EXPLORER — Decision Tree Container
+   ============================================= */
+.trail-explorer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 32px;
+  position: relative;
+  z-index: 1;
+}
+
+/* =============================================
+   DECISION TREE — Root Node
+   ============================================= */
+.tree-root {
+  position: relative;
+  margin-bottom: 0;
+}
+
+.tree-node-card {
+  background: linear-gradient(135deg, rgba(26, 122, 26, 0.85) 0%, rgba(44, 168, 44, 0.85) 40%, rgba(68, 204, 68, 0.85) 100%);
+  clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
+  padding: 20px 24px;
+  filter:
+    drop-shadow(0 0 0 white) drop-shadow(0 0 0 white)
+    drop-shadow(0 0 1px white) drop-shadow(0 0 1px white)
+    drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+}
+
+.tree-node-current {
+  padding: 24px 28px;
+  background: linear-gradient(135deg, rgba(26, 122, 26, 0.9) 0%, rgba(44, 168, 44, 0.9) 40%, rgba(68, 204, 68, 0.9) 100%);
+}
+
+.tree-node-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.tree-node-id {
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000, 2px 0 0 #000;
+}
+
+.tree-node-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.tree-node-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.tree-node-actions {
+  margin-top: 14px;
+}
+
+.explorer-assess-btn {
+  background: linear-gradient(135deg, #ff8c00, #ffb72f);
+  color: #0a0e1a;
+  border: none;
+  padding: 9px 22px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.explorer-assess-btn:hover {
+  background: linear-gradient(135deg, #ffb72f, #ffcc44);
+  filter: drop-shadow(0 0 10px rgba(255, 183, 47, 0.4));
+}
+
+/* =============================================
+   DECISION TREE — Collapsible NIST Requirement
+   ============================================= */
+.tree-nist-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.65);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 16px;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  background: rgba(0, 0, 0, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px);
+}
+.tree-nist-toggle:hover {
+  background: rgba(0, 0, 0, 0.25);
+  color: rgba(255, 255, 255, 0.85);
+}
+.toggle-icon {
+  font-size: 10px;
+  transition: transform 0.2s;
+}
+
+.tree-nist-body {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 14px 18px;
+  margin-top: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px);
+  animation: slideDown 0.2s ease-out;
+}
+.tree-nist-body p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+  margin: 0;
+  text-shadow: -1px -1px 0 rgba(0,0,0,0.6), 1px -1px 0 rgba(0,0,0,0.6), -1px 1px 0 rgba(0,0,0,0.6), 1px 1px 0 rgba(0,0,0,0.6);
+}
+
+/* =============================================
+   DECISION TREE — Referenced By Bar
+   ============================================= */
+.tree-ref-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  margin-top: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(60, 200, 60, 0.15);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tree-ref-bar:hover {
+  background: rgba(0, 0, 0, 0.45);
+}
+.tree-ref-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.65);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.tree-ref-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  margin-top: 4px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(60, 200, 60, 0.1);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+  animation: slideDown 0.2s ease-out;
+}
+
+.tree-ref-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: rgba(0, 0, 0, 0.2);
+  clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tree-ref-chip:hover {
+  background: rgba(255, 140, 0, 0.2);
+  transform: translateX(4px);
+}
+.tree-ref-id {
+  font-size: 13px;
+  font-weight: 900;
+  color: #fff;
+  min-width: 50px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.tree-ref-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  flex: 1;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+/* =============================================
+   DECISION TREE — Trunk (Central Connector)
+   ============================================= */
+.tree-trunk {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  position: relative;
+}
+.tree-trunk-line {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.5), rgba(255, 140, 0, 0.5), transparent);
+}
+.tree-trunk-label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255, 183, 47, 0.9);
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  white-space: nowrap;
+  padding: 6px 18px;
+  background: rgba(255, 140, 0, 0.12);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+}
+
+/* =============================================
+   DECISION TREE — Branch Layout
+   ============================================= */
+.tree-branches {
+  position: relative;
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+/* Vertical trunk line running down the left side */
+.tree-branches::before {
+  content: '';
+  position: absolute;
+  left: 24px;
+  top: 0;
+  bottom: 20px;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(255, 140, 0, 0.5), rgba(255, 140, 0, 0.15));
+}
+
+.tree-branch {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  padding-left: 28px;
+}
+
+/* Horizontal connector line from trunk to card */
+.tree-branch-connector {
+  position: absolute;
+  left: 0;
+  top: 20px;
+  width: 28px;
+  display: flex;
+  align-items: center;
+}
+.tree-branch-connector::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 140, 0, 0.45);
+}
+
+/* Dot at the branch junction */
+.tree-branch-dot {
+  position: absolute;
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(135deg, #ff8c00, #ffb72f);
+  border: 2px solid rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 0 0 8px rgba(255, 140, 0, 0.5);
+}
+
+/* Completed branch connectors — dimmed */
+.tree-branch-connector-done::before {
+  background: rgba(52, 211, 153, 0.25);
+}
+.tree-branch-dot-done {
+  background: linear-gradient(135deg, #34d399, #6ee7b7);
+  box-shadow: 0 0 4px rgba(52, 211, 153, 0.3);
+}
+
+/* =============================================
+   DECISION TREE — Branch Node Cards
+   ============================================= */
+.tree-node-actionable {
+  flex: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.tree-node-actionable:hover {
+  transform: translateX(4px);
+  filter:
+    drop-shadow(0 0 0 white) drop-shadow(0 0 0 white)
+    drop-shadow(0 0 2px white) drop-shadow(0 0 2px white)
+    drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4));
+}
+.tree-node-actionable .tree-node-id {
+  font-size: 16px;
+}
+.tree-node-actionable .tree-node-name {
+  font-size: 13px;
+}
+
+/* "Follow this path →" CTA */
+.tree-node-follow {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: rgba(255, 183, 47, 0.9);
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  transition: color 0.2s;
+}
+.tree-node-actionable:hover .tree-node-follow {
+  color: #ffcc44;
+}
+
+/* =============================================
+   DECISION TREE — Completed Branch Cards
+   ============================================= */
+.tree-completed-group {
+  margin-top: 8px;
+  position: relative;
+}
+.tree-completed-label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(52, 211, 153, 0.7);
+  padding: 6px 0 8px 4px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.tree-node-done {
+  flex: 1;
+  opacity: 0.55;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, rgba(26, 122, 26, 0.6) 0%, rgba(44, 168, 44, 0.6) 40%, rgba(68, 204, 68, 0.6) 100%);
+  filter:
+    drop-shadow(0 0 0 rgba(255,255,255,0.5))
+    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
+}
+.tree-node-done:hover {
+  opacity: 0.8;
+  transform: translateX(4px);
+}
+.tree-node-done .tree-node-id {
+  font-size: 14px;
+}
+.tree-node-done .tree-node-name {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.tree-node-done .tree-node-follow {
+  color: rgba(52, 211, 153, 0.7);
+  font-size: 11px;
+  margin-top: 6px;
+  padding-top: 6px;
+}
+.tree-node-done:hover .tree-node-follow {
+  color: rgba(52, 211, 153, 1);
+}
+
+/* =============================================
+   DECISION TREE — Animations
+   ============================================= */
+@keyframes treeFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tree-root {
+  animation: treeFadeIn 0.3s ease-out;
+}
+.tree-branch {
+  animation: treeFadeIn 0.3s ease-out;
+  animation-fill-mode: both;
+}
+.tree-branch:nth-child(1) { animation-delay: 0.05s; }
+.tree-branch:nth-child(2) { animation-delay: 0.1s; }
+.tree-branch:nth-child(3) { animation-delay: 0.15s; }
+.tree-branch:nth-child(4) { animation-delay: 0.2s; }
+.tree-branch:nth-child(5) { animation-delay: 0.25s; }
+.tree-branch:nth-child(6) { animation-delay: 0.3s; }
+.tree-branch:nth-child(7) { animation-delay: 0.35s; }
+.tree-branch:nth-child(8) { animation-delay: 0.4s; }
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .score-section { grid-template-columns: 1fr; }
   .family-grid { grid-template-columns: 1fr 1fr; }
   .header { flex-direction: column; gap: 12px; text-align: center; }
+  .nav-tabs { padding: 0 12px; }
+  .nav-tab { padding: 12px 16px; font-size: 13px; }
+  .rec-stats { flex-direction: column; gap: 12px; }
+  .rec-filter-row { flex-direction: column; align-items: flex-start; }
+  .trail-bar { flex-wrap: wrap; padding: 10px 16px; }
+  .tree-branches { padding-left: 16px; }
+  .tree-branch { padding-left: 20px; }
+  .tree-branch-connector { width: 20px; }
+  .tree-node-current { padding: 18px 20px; }
 }

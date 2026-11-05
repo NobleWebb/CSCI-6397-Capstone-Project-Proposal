@@ -4,6 +4,8 @@ A web-based compliance tracking and audit management system built for organizati
 
 ![Dashboard Screenshot](compliance-tracker/docs/dashboard-screenshot.png)
 
+![Recommendations Decision Tree](compliance-tracker/docs/recommendations-tree-screenshot.png)
+
 ## Overview
 
 The Compliance Tracker digitizes the process of assessing and tracking cybersecurity compliance across all 20 NIST 800-53 control families. Instead of manually managing spreadsheets, organizations can use this tool to:
@@ -12,6 +14,8 @@ The Compliance Tracker digitizes the process of assessing and tracking cybersecu
 - **Rate maturity levels** on a 1–5 scale (Initial → Optimized) for each control
 - **View compliance scores** at a glance with an overall percentage and per-family breakdown
 - **Drill into control families** by clicking any family card to see individual controls
+- **Explore recommended controls** through an interactive decision tree that maps relationships between NIST controls — follow branching paths from one control to the next
+- **Navigate control connections** with a breadcrumb trail that tracks your exploration path and lets you jump back to any point
 - **Review full NIST requirements** with expandable descriptions pulled from the official standard
 - **Document evidence** and notes for each control assessment
 
@@ -85,6 +89,8 @@ compliance-tracker/
 | GET | `/api/compliance` | Get all compliance records for the logged-in user |
 | GET | `/api/compliance/score` | Get overall and per-family compliance scores |
 | PUT | `/api/compliance/:controlId` | Update a control's answer, rating, and evidence |
+| GET | `/api/recommendations` | Get recommended controls based on completed assessments |
+| GET | `/api/recommendations/connections/:controlId` | Get a control's connections (leads to / referenced by) |
 
 ## Course
 

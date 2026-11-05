@@ -41,7 +41,14 @@
     </div>
   </div>
 
-  <div class="main">
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-tab="dashboard">Dashboard</button>
+    <button class="nav-tab" data-tab="recommendations">Recommendations</button>
+  </div>
+
+  <!-- ===== DASHBOARD TAB ===== -->
+  <div class="main tab-content" id="tab-dashboard">
     <!-- Score Cards -->
     <div class="score-section">
       <div class="score-card">
@@ -83,6 +90,51 @@
           <tbody id="familyControlsBody"></tbody>
         </table>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== RECOMMENDATIONS TAB ===== -->
+  <div class="main tab-content" id="tab-recommendations" style="display:none;">
+    <div class="rec-header-section">
+      <h3>Recommended Controls</h3>
+      <p class="rec-subtitle">Based on your completed controls, these related controls are recommended to work on next. Click any control to explore its connections — follow the breadcrumb trail to trace relationships between controls.</p>
+      <div class="rec-stats">
+        <div class="rec-stat">
+          <span class="rec-stat-value" id="recCompletedCount">—</span>
+          <span class="rec-stat-label">Completed</span>
+        </div>
+        <div class="rec-stat">
+          <span class="rec-stat-value" id="recTotalCount">—</span>
+          <span class="rec-stat-label">Recommended</span>
+        </div>
+      </div>
+      <div class="rec-filter-row">
+        <label>Filter by family:</label>
+        <select id="recFamilyFilter">
+          <option value="">All Families</option>
+        </select>
+        <label>Show:</label>
+        <select id="recStatusFilter">
+          <option value="all">All Recommended</option>
+          <option value="unassessed">Not Yet Assessed</option>
+          <option value="incomplete">No / In-Progress Only</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Breadcrumb Trail (hidden until user clicks a control) -->
+    <div id="trailBar" class="trail-bar" style="display:none;">
+      <div class="trail-bar-label">TRAIL:</div>
+      <div id="trailCrumbs" class="trail-crumbs"></div>
+      <button id="trailClose" class="trail-close" title="Close trail">&times; Back to List</button>
+    </div>
+
+    <!-- Control Explorer (hidden until user clicks a control) -->
+    <div id="trailExplorer" class="trail-explorer" style="display:none;"></div>
+
+    <!-- Recommendations List -->
+    <div id="recList" class="rec-list">
+      <p class="loading">Loading recommendations...</p>
     </div>
   </div>
 </div>
