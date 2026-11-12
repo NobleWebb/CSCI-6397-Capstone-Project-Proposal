@@ -45,6 +45,7 @@
   <div class="nav-tabs">
     <button class="nav-tab active" data-tab="dashboard">Dashboard</button>
     <button class="nav-tab" data-tab="recommendations">Recommendations</button>
+    <button class="nav-tab" data-tab="import">Import</button>
   </div>
 
   <!-- ===== DASHBOARD TAB ===== -->
@@ -135,6 +136,50 @@
     <!-- Recommendations List -->
     <div id="recList" class="rec-list">
       <p class="loading">Loading recommendations...</p>
+    </div>
+  </div>
+
+  <!-- ===== IMPORT TAB ===== -->
+  <div class="main tab-content" id="tab-import" style="display:none;">
+    <div class="import-section">
+      <h3>Import Arkansas Cybersecurity Rubric</h3>
+      <p class="import-subtitle">Upload your existing Arkansas Cybersecurity Rubric Excel spreadsheet to import all compliance data (answers, ratings, and evidence) into the tracker. The file should follow the standard rubric format with family sheets (AC, AT, CP, etc.).</p>
+
+      <div class="import-upload-area" id="importDropZone">
+        <div class="import-icon">&#128196;</div>
+        <p class="import-drag-text">Drag & drop your Excel file here</p>
+        <p class="import-or">— or —</p>
+        <label class="btn-primary import-browse-btn">
+          Browse Files
+          <input type="file" id="importFileInput" accept=".xlsx,.xls" style="display:none;">
+        </label>
+        <p class="import-hint">Accepts .xlsx and .xls files (max 10 MB)</p>
+      </div>
+
+      <!-- Selected file info -->
+      <div id="importFileInfo" class="import-file-info" style="display:none;">
+        <span class="import-file-name" id="importFileName"></span>
+        <button class="import-file-remove" id="importFileRemove">&times;</button>
+      </div>
+
+      <!-- Upload button -->
+      <button class="btn-primary import-upload-btn" id="importUploadBtn" style="display:none;">Upload & Import</button>
+
+      <!-- Progress -->
+      <div id="importProgress" class="import-progress" style="display:none;">
+        <div class="import-progress-bar">
+          <div class="import-progress-fill" id="importProgressFill"></div>
+        </div>
+        <p class="import-progress-text" id="importProgressText">Uploading...</p>
+      </div>
+
+      <!-- Results -->
+      <div id="importResults" class="import-results" style="display:none;">
+        <div class="import-results-header" id="importResultsHeader"></div>
+        <div class="import-results-summary" id="importResultsSummary"></div>
+        <div class="import-results-details" id="importResultsDetails"></div>
+        <button class="btn-primary import-another-btn" id="importAnotherBtn">Import Another File</button>
+      </div>
     </div>
   </div>
 </div>

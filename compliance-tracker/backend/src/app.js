@@ -51,6 +51,8 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/controls', require('./routes/controls'));
 app.use('/api/compliance', require('./routes/compliance'));
 app.use('/api/dashboard', require('./routes/dashboard'));
+app.use('/api/recommendations', require('./routes/recommendations'));
+app.use('/api/import', require('./routes/import'));
 
 // 404 for anything not matched above
 app.use((req, res) => {

@@ -61,6 +61,7 @@ document.getElementById('logoutBtn').addEventListener('click', function() {
   document.querySelector('.nav-tab[data-tab="dashboard"]').classList.add('active');
   document.getElementById('tab-dashboard').style.display = '';
   document.getElementById('tab-recommendations').style.display = 'none';
+  document.getElementById('tab-import').style.display = 'none';
 });
 
 // ---- Tab Navigation ----
@@ -705,4 +706,178 @@ function closeTrail() {
 document.getElementById('trailClose').addEventListener('click', function() {
   closeTrail();
   renderRecommendations(); // refresh the list
+});
+
+// ======================================================================
+// ---- IMPORT TAB ----
+// ======================================================================
+
+var importSelectedFile = null;
+
+// File input change
+document.getElementById('importFileInput').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (file) selectImportFile(file);
+});
+
+// Drag-and-drop
+var dropZone = document.getElementById('importDropZone');
+
+dropZone.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  dropZone.classList.add('drag-over');
+});
+dropZone.addEventListener('dragleave', function() {
+  dropZone.classList.remove('drag-over');
+});
+dropZone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  var file = e.dataTransfer.files[0];
+  if (file && file.name.match(/\.(xlsx|xls)$/i)) {
+    selectImportFile(file);
+  } else {
+    alert('Please drop an Excel file (.xlsx or .xls)');
+  }
+});
+
+function selectImportFile(file) {
+  importSelectedFile = file;
+  document.getElementById('importFileName').textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+  document.getElementById('importFileInfo').style.display = 'flex';
+  document.getElementById('importUploadBtn').style.display = 'block';
+  document.getElementById('importDropZone').style.display = 'none';
+  document.getElementById('importResults').style.display = 'none';
+}
+
+// Remove selected file
+document.getElementById('importFileRemove').addEventListener('click', function() {
+  importSelectedFile = null;
+  document.getElementById('importFileInfo').style.display = 'none';
+  document.getElementById('importUploadBtn').style.display = 'none';
+  document.getElementById('importDropZone').style.display = '';
+  document.getElementById('importFileInput').value = '';
+});
+
+// Upload button
+document.getElementById('importUploadBtn').addEventListener('click', async function() {
+  if (!importSelectedFile || !token) return;
+
+  var btn = document.getElementById('importUploadBtn');
+  var progress = document.getElementById('importProgress');
+  var progressFill = document.getElementById('importProgressFill');
+  var progressText = document.getElementById('importProgressText');
+
+  btn.disabled = true;
+  btn.textContent = 'Uploading...';
+  progress.style.display = 'block';
+  progressFill.style.width = '20%';
+  progressText.textContent = 'Uploading file...';
+
+  var formData = new FormData();
+  formData.append('file', importSelectedFile);
+
+  try {
+    progressFill.style.width = '50%';
+    progressText.textContent = 'Processing spreadsheet...';
+
+    var res = await fetch(API + '/api/import', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      body: formData
+    });
+
+    progressFill.style.width = '90%';
+    progressText.textContent = 'Reading results...';
+
+    var data = await res.json();
+
+    progressFill.style.width = '100%';
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Import failed');
+    }
+
+    // Show results
+    showImportResults(data);
+
+    // Refresh dashboard data in the background
+    loadDashboard();
+  } catch (err) {
+    showImportError(err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Upload & Import';
+    setTimeout(function() {
+      progress.style.display = 'none';
+      progressFill.style.width = '0%';
+    }, 600);
+  }
+});
+
+function showImportResults(data) {
+  document.getElementById('importUploadBtn').style.display = 'none';
+  document.getElementById('importFileInfo').style.display = 'none';
+
+  var results = document.getElementById('importResults');
+  results.style.display = 'block';
+
+  // Header
+  var header = document.getElementById('importResultsHeader');
+  if (data.imported > 0) {
+    header.className = 'import-results-header success';
+    header.textContent = 'Import Successful!';
+  } else {
+    header.className = 'import-results-header warning';
+    header.textContent = 'No controls were imported';
+  }
+
+  // Summary stats
+  var summary = document.getElementById('importResultsSummary');
+  summary.innerHTML =
+    '<div class="import-stat-card"><span class="import-stat-value">' + data.imported + '</span><span class="import-stat-label">Imported</span></div>' +
+    '<div class="import-stat-card"><span class="import-stat-value">' + data.skipped + '</span><span class="import-stat-label">Skipped</span></div>' +
+    '<div class="import-stat-card"><span class="import-stat-value">' + data.total + '</span><span class="import-stat-label">Total Processed</span></div>';
+
+  // Per-family details
+  var details = document.getElementById('importResultsDetails');
+  if (data.details && data.details.length > 0) {
+    details.innerHTML = data.details.map(function(d) {
+      var countText = d.imported > 0 ? d.imported + ' imported' : '';
+      var skipText = d.skipped > 0 ? d.skipped + ' skipped' : '';
+      var noteText = d.note ? d.note : '';
+      var infoText = [countText, skipText, noteText].filter(Boolean).join(', ');
+
+      return '<div class="import-family-row">' +
+        '<span class="import-family-name">' + d.family + '</span>' +
+        (d.imported > 0 ? '<span class="import-family-count">' + d.imported + ' imported</span>' : '') +
+        (d.note ? '<span class="import-family-note">' + d.note + '</span>' : '') +
+      '</div>';
+    }).join('');
+  }
+}
+
+function showImportError(message) {
+  document.getElementById('importUploadBtn').style.display = 'none';
+  document.getElementById('importFileInfo').style.display = 'none';
+
+  var results = document.getElementById('importResults');
+  results.style.display = 'block';
+
+  var header = document.getElementById('importResultsHeader');
+  header.className = 'import-results-header error';
+  header.textContent = 'Import Failed: ' + message;
+
+  document.getElementById('importResultsSummary').innerHTML = '';
+  document.getElementById('importResultsDetails').innerHTML = '';
+}
+
+// "Import Another File" button
+document.getElementById('importAnotherBtn').addEventListener('click', function() {
+  importSelectedFile = null;
+  document.getElementById('importFileInput').value = '';
+  document.getElementById('importResults').style.display = 'none';
+  document.getElementById('importFileInfo').style.display = 'none';
+  document.getElementById('importUploadBtn').style.display = 'none';
+  document.getElementById('importDropZone').style.display = '';
 });
