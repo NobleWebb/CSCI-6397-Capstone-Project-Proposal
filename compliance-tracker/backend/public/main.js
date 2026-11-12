@@ -9,13 +9,40 @@ let activeTab = 'dashboard';
 
 const API = '';  // same origin
 
+// ---- Login / Register toggle ----
+document.getElementById('showRegister').addEventListener('click', function(e) {
+  e.preventDefault();
+  document.getElementById('loginFormWrapper').style.display = 'none';
+  document.getElementById('registerFormWrapper').style.display = 'block';
+  document.getElementById('registerError').style.display = 'none';
+  document.getElementById('registerSuccess').style.display = 'none';
+});
+document.getElementById('showLogin').addEventListener('click', function(e) {
+  e.preventDefault();
+  document.getElementById('registerFormWrapper').style.display = 'none';
+  document.getElementById('loginFormWrapper').style.display = 'block';
+  document.getElementById('loginError').style.display = 'none';
+});
+
 // ---- Login ----
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
   e.preventDefault();
-  var email = document.getElementById('loginEmail').value;
+  var email = document.getElementById('loginEmail').value.trim();
   var password = document.getElementById('loginPassword').value;
   var errorEl = document.getElementById('loginError');
   var btn = document.getElementById('loginBtn');
+
+  // Client-side email format check
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errorEl.textContent = 'Please enter a valid email address';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if (!password) {
+    errorEl.textContent = 'Password is required';
+    errorEl.style.display = 'block';
+    return;
+  }
 
   btn.disabled = true;
   btn.textContent = 'Signing in...';
@@ -48,6 +75,123 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
   }
 });
 
+// ---- Registration: password requirements live validation ----
+(function() {
+  var pwInput = document.getElementById('regPassword');
+  var confirmInput = document.getElementById('regConfirmPassword');
+  var registerBtn = document.getElementById('registerBtn');
+
+  var checks = {
+    'req-length':  function(p) { return p.length >= 8; },
+    'req-upper':   function(p) { return /[A-Z]/.test(p); },
+    'req-lower':   function(p) { return /[a-z]/.test(p); },
+    'req-number':  function(p) { return /[0-9]/.test(p); },
+    'req-special': function(p) { return /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(p); }
+  };
+
+  function updateRequirements() {
+    var pw = pwInput.value;
+    var allMet = true;
+    Object.keys(checks).forEach(function(id) {
+      var el = document.getElementById(id);
+      var met = checks[id](pw);
+      el.classList.toggle('met', met);
+      el.querySelector('.req-icon').innerHTML = met ? '&#10003;' : '&#10005;';
+      if (!met) allMet = false;
+    });
+
+    // Check confirm password match
+    var matchEl = document.getElementById('passwordMatch');
+    var confirm = confirmInput.value;
+    if (confirm.length > 0) {
+      if (confirm === pw) {
+        matchEl.textContent = 'Passwords match';
+        matchEl.className = 'password-match match';
+      } else {
+        matchEl.textContent = 'Passwords do not match';
+        matchEl.className = 'password-match no-match';
+      }
+    } else {
+      matchEl.textContent = '';
+      matchEl.className = 'password-match';
+    }
+
+    // Enable/disable register button
+    var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('regEmail').value.trim());
+    registerBtn.disabled = !(allMet && confirm === pw && pw.length > 0 && emailOk);
+  }
+
+  pwInput.addEventListener('input', updateRequirements);
+  confirmInput.addEventListener('input', updateRequirements);
+  document.getElementById('regEmail').addEventListener('input', updateRequirements);
+})();
+
+// ---- Registration: form submit ----
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var name = document.getElementById('regName').value.trim();
+  var email = document.getElementById('regEmail').value.trim();
+  var password = document.getElementById('regPassword').value;
+  var confirmPassword = document.getElementById('regConfirmPassword').value;
+  var errorEl = document.getElementById('registerError');
+  var successEl = document.getElementById('registerSuccess');
+  var btn = document.getElementById('registerBtn');
+
+  errorEl.style.display = 'none';
+  successEl.style.display = 'none';
+
+  // Client-side validation
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errorEl.textContent = 'Please enter a valid email address';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if (password.length < 8) {
+    errorEl.textContent = 'Password must be at least 8 characters';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if (password !== confirmPassword) {
+    errorEl.textContent = 'Passwords do not match';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Creating Account...';
+
+  try {
+    var res = await fetch(API + '/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, email: email, password: password, confirmPassword: confirmPassword })
+    });
+    var data = await res.json();
+
+    if (!res.ok) {
+      var msg = data.error || 'Registration failed';
+      if (data.requirements && data.requirements.length > 0) {
+        msg += ': ' + data.requirements.join(', ');
+      }
+      throw new Error(msg);
+    }
+
+    // Auto-login after successful registration
+    token = data.token;
+    currentUser = data.user;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appScreen').style.display = 'block';
+    document.getElementById('userEmail').textContent = currentUser.email;
+    loadDashboard();
+  } catch (err) {
+    errorEl.textContent = err.message;
+    errorEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create Account';
+  }
+});
+
 // ---- Logout ----
 document.getElementById('logoutBtn').addEventListener('click', function() {
   token = null;
@@ -56,6 +200,9 @@ document.getElementById('logoutBtn').addEventListener('click', function() {
   activeTab = 'dashboard';
   document.getElementById('appScreen').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
+  // Reset to login form (not register)
+  document.getElementById('registerFormWrapper').style.display = 'none';
+  document.getElementById('loginFormWrapper').style.display = 'block';
   // Reset tab state
   document.querySelectorAll('.nav-tab').forEach(function(t) { t.classList.remove('active'); });
   document.querySelector('.nav-tab[data-tab="dashboard"]').classList.add('active');

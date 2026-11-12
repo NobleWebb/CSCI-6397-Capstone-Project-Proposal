@@ -88,6 +88,24 @@ async function run() {
       CREATE INDEX IF NOT EXISTS idx_related_target ON related_controls(target_control_id);
     `);
 
+    // Add security columns (safe to re-run — IF NOT EXISTS equivalent via DO block)
+    console.log('     Adding security columns...');
+    await client.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='failed_login_attempts') THEN
+          ALTER TABLE users ADD COLUMN failed_login_attempts INTEGER DEFAULT 0;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='locked_until') THEN
+          ALTER TABLE users ADD COLUMN locked_until TIMESTAMP;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='name') THEN
+          ALTER TABLE users ADD COLUMN name VARCHAR(255);
+        END IF;
+      END
+      $$;
+    `);
+
     // 2. Insert default demo user (password: "password")
     console.log('2/5  Creating demo user...');
     const hash = await bcrypt.hash('password', 10);

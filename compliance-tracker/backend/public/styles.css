@@ -198,6 +198,82 @@ body::after {
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
+/* --- Registration & Auth Toggle --- */
+.auth-toggle {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.auth-toggle a {
+  color: #ffb72f;
+  text-decoration: none;
+  font-weight: 700;
+}
+.auth-toggle a:hover {
+  text-decoration: underline;
+  color: #ffcc44;
+}
+.optional-label {
+  font-weight: 400;
+  text-transform: none;
+  opacity: 0.6;
+  font-size: 11px;
+}
+.success-msg {
+  background: rgba(0, 80, 0, 0.4);
+  color: #88ff88;
+  padding: 10px 14px;
+  border-radius: 0;
+  clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px);
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: none;
+  border: 1px solid rgba(100, 255, 100, 0.3);
+  font-weight: 600;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+/* --- Password requirements checklist --- */
+.password-requirements {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0;
+  clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);
+}
+.password-requirements .req {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 3px;
+  transition: color 0.2s;
+}
+.password-requirements .req.met {
+  color: #66ff66;
+}
+.password-requirements .req .req-icon {
+  display: inline-block;
+  width: 16px;
+  font-size: 11px;
+}
+.password-requirements .req.met .req-icon {
+  color: #66ff66;
+}
+
+/* --- Password match indicator --- */
+.password-match {
+  font-size: 12px;
+  margin-top: 6px;
+  font-weight: 600;
+}
+.password-match.match {
+  color: #66ff66;
+}
+.password-match.no-match {
+  color: #ffaaaa;
+}
+
 /* --- Main Layout --- */
 .main {
   max-width: 1100px;
