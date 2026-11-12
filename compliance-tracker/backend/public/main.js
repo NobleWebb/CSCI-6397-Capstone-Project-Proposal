@@ -488,7 +488,14 @@ document.getElementById('editForm').addEventListener('submit', async function(e)
       loadDashboard();
     } else {
       loadDashboard(); // refresh controlsCache too
-      loadRecommendations();
+      // If the user is exploring a trail (connection view), stay on
+      // that control instead of resetting back to the recommendations list.
+      if (trailHistory.length > 0) {
+        var currentTrailControl = trailHistory[trailHistory.length - 1].control_id;
+        openTrailExplorer(currentTrailControl);
+      } else {
+        loadRecommendations();
+      }
     }
   } catch (err) {
     alert('Network error: ' + err.message);

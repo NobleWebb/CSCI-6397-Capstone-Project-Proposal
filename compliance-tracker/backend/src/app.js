@@ -12,6 +12,13 @@ const path = require('path');
 
 const app = express();
 
+// --- Trust proxy (required on Render / behind reverse proxies) ------------
+// Without this, express-rate-limit cannot read the real client IP from
+// X-Forwarded-For and throws ERR_ERL_UNEXPECTED_X_FORWARDED_FOR.
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 // --- Security middleware ---------------------------------------------------
 app.use(helmet()); // sets secure HTTP headers
 app.use(cors({

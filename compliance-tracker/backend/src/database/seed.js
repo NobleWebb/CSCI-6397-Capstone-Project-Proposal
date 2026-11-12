@@ -136,14 +136,40 @@ async function run() {
       console.log('4/5  SKIP — update_nist_descriptions.sql not found');
     }
 
-    // 5. Load related controls
+    // 5. Load related controls (column on controls table)
     const relatedFile = path.join(backendRoot, 'add_related_controls.sql');
     if (fs.existsSync(relatedFile)) {
-      console.log('5/5  Loading related-controls graph...');
+      console.log('5/6  Loading related-controls column data...');
       const sql = fs.readFileSync(relatedFile, 'utf8');
       await client.query(sql);
     } else {
-      console.log('5/5  SKIP — add_related_controls.sql not found');
+      console.log('5/6  SKIP — add_related_controls.sql not found');
+    }
+
+    // 6. Populate related_controls TABLE from the column data
+    //    This converts the comma-separated text column into proper table rows
+    //    that the recommendations route can query with JOINs.
+    const colCheck = await client.query(`
+      SELECT column_name FROM information_schema.columns
+      WHERE table_name = 'controls' AND column_name = 'related_controls'
+    `);
+    if (colCheck.rows.length > 0) {
+      console.log('6/6  Populating related_controls table from column data...');
+      await client.query(`
+        INSERT INTO related_controls (source_control_id, target_control_id)
+        SELECT c.control_id, TRIM(val)
+        FROM controls c,
+             LATERAL unnest(string_to_array(c.related_controls, ',')) AS val
+        WHERE c.related_controls IS NOT NULL
+          AND c.related_controls != ''
+          AND TRIM(val) != ''
+          AND EXISTS (SELECT 1 FROM controls WHERE control_id = TRIM(val))
+        ON CONFLICT (source_control_id, target_control_id) DO NOTHING
+      `);
+      const countRes = await client.query('SELECT COUNT(*) FROM related_controls');
+      console.log('     ' + countRes.rows[0].count + ' relationships loaded.');
+    } else {
+      console.log('6/6  SKIP — related_controls column not found (add_related_controls.sql may be missing)');
     }
 
     console.log('Done! Database is ready.');
