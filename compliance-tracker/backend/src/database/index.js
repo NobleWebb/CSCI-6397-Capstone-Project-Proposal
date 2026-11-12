@@ -9,15 +9,25 @@
 
 const { Pool } = require('pg');
 
-const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: Number(process.env.DB_PORT) || 5432,
-  database: process.env.DB_NAME || 'compliance_tracker',
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  max: 10,                    // connections kept open
-  idleTimeoutMillis: 30000
-});
+// Support Render's DATABASE_URL (production) or individual env vars (local dev)
+const poolConfig = process.env.DATABASE_URL
+  ? {
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+      max: 10,
+      idleTimeoutMillis: 30000
+    }
+  : {
+      host: process.env.DB_HOST || 'localhost',
+      port: Number(process.env.DB_PORT) || 5432,
+      database: process.env.DB_NAME || 'compliance_tracker',
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      max: 10,
+      idleTimeoutMillis: 30000
+    };
+
+const pool = new Pool(poolConfig);
 
 pool.on('error', (err) => {
   console.error('Unexpected PostgreSQL pool error', err);
