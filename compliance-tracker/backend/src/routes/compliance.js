@@ -23,22 +23,37 @@ router.get('/score', authMiddleware, async (req, res, next) => {
     const overall = calculateScore(result.rows);
     const byFamily = scoreByFamily(result.rows);
 
+    // Ensure ALL families from the controls table appear in the response,
+    // even if the user has no compliance records for them yet.
+    const allFamilies = await db.query(
+      'SELECT DISTINCT control_family FROM controls ORDER BY control_family'
+    );
+    for (const row of allFamilies.rows) {
+      if (!byFamily[row.control_family]) {
+        byFamily[row.control_family] = {
+          total: 0, applicable: 0, notApplicable: 0,
+          yes: 0, no: 0, inProgress: 0,
+          compliancePercent: 0, averageMaturity: null
+        };
+      }
+    }
+
     res.json({ overall, byFamily });
   } catch (err) {
     next(err);
   }
 });
 
-// GET /api/compliance -> all of this user's compliance records
+// GET /api/compliance -> ALL controls with this user's compliance status
+// Uses LEFT JOIN so every control appears even if the user hasn't assessed it yet.
 router.get('/', authMiddleware, async (req, res, next) => {
   try {
     const result = await db.query(
-      `SELECT cs.status_id, cs.control_id, c.control_name, c.control_family,
+      `SELECT cs.status_id, c.control_id, c.control_name, c.control_family,
               c.nist_standard, c.phase, cs.answer, cs.rating, cs.evidence, cs.updated_at
-       FROM compliance_status cs
-       JOIN controls c ON cs.control_id = c.control_id
-       WHERE cs.user_id = $1
-       ORDER BY cs.control_id`,
+       FROM controls c
+       LEFT JOIN compliance_status cs ON c.control_id = cs.control_id AND cs.user_id = $1
+       ORDER BY c.control_id`,
       [req.user.userId]
     );
 
